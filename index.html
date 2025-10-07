@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Info Viewer</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #74abe2, #5563de);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 30px 10px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .weather-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        border-radius: 15px;
+        padding: 25px;
+        width: 90%;
+        max-width: 420px;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      }
+
+      input {
+        width: 80%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #ffb100;
+        color: #222;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #ffcc33;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+
+      .error {
+        color: #ffdddd;
+        font-size: 16px;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 24px;
+        }
+        .weather-box {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Weather Info Viewer</h1>
+
+    <div class="weather-box">
+      <input type="text" id="cityInput" placeholder="Enter city name" />
+      <br />
+      <button id="getWeather">Get Weather</button>
+
+      <div class="result" id="weatherResult"></div>
+    </div>
+
+    <script>
+      const btn = document.getElementById("getWeather");
+      const cityInput = document.getElementById("cityInput");
+      const resultDiv = document.getElementById("weatherResult");
+
+      // Convert city name to coordinates using geocoding API
+      async function getCoordinates(city) {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${city}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const { latitude, longitude, name, country } = data.results[0];
+          return { latitude, longitude, name, country };
+        } else {
+          throw new Error("City not found");
+        }
+      }
+
+      // Fetch weather data using Open-Meteo API
+      async function getWeatherData(lat, lon) {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.current_weather;
+      }
+
+      btn.addEventListener("click", async () => {
+        const city = cityInput.value.trim();
+        if (!city) {
+          resultDiv.innerHTML = `<p class="error">Please enter a city name.</p>`;
+          return;
+        }
+
+        resultDiv.innerHTML = `<p>Fetching weather details...</p>`;
+        try {
+          const { latitude, longitude, name, country } = await getCoordinates(
+            city
+          );
+          const weather = await getWeatherData(latitude, longitude);
+
+          resultDiv.innerHTML = `
+          <h3>${name}, ${country}</h3>
+          <p>Temperature: ${weather.temperature}°C</p>
+          <p>Wind Speed: ${weather.windspeed} km/h</p>
+          <p>Condition: ${
+            weather.weathercode === 0 ? "Clear" : "Cloudy / Rainy"
+          }</p>
+        `;
+        } catch (err) {
+          resultDiv.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+        }
+      });
+    </script>
+  </body>
+</html>
