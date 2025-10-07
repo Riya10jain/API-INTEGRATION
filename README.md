@@ -12,6 +12,8 @@
 
 *MENTOR*: NEELA SANTOSH
 
+*OUTPUT*:<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/7e947df8-dd5a-42df-8843-bdd9621c49ac" />
+
 The given task focuses on developing a responsive and interactive webpage that can fetch, process, and display data dynamically from a public API such as a weather or news service. This project aims to demonstrate the integration of front-end web technologies—namely HTML, CSS, and JavaScript—with publicly available APIs to build an application that provides real-time information to users. The primary goal is to bridge the gap between static webpage design and dynamic data-driven web development by allowing users to retrieve live information from an external data source and display it meaningfully in the browser.
 
 In the modern web ecosystem, APIs (Application Programming Interfaces) play a crucial role in connecting web applications with real-time data sources. Instead of manually updating information, APIs allow developers to fetch live data such as weather updates, news headlines, cryptocurrency prices, or social media feeds. By integrating a public API, the webpage becomes more functional, interactive, and user-centric. This project specifically uses the Open-Meteo API, a free and reliable weather service that provides data such as temperature, wind speed, and weather conditions for a given location. Through this API, the webpage can retrieve up-to-date weather data based on the city entered by the user.
